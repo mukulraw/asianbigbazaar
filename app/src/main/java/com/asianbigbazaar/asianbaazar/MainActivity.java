@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -26,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -131,21 +133,43 @@ public class MainActivity extends AppCompatActivity {
 
         //load the home page URL
         //load the home page URL
-        myWebView.loadUrl("https://asianbigbazaar.com/");
+
 
 
         myWebView.setWebViewClient(new MyWebViewClient());
+
+        //Add a JavaScriptInterface, so I can make calls from the web to Java methods
+        myWebView.addJavascriptInterface(new myJavaScriptInterface(), "CallToAnAndroidFunction");
+
         myWebView.setWebChromeClient(new MyWebChromeClient());
         Animation anim = AnimationUtils.loadAnimation(getApplicationContext() , R.anim.fade_in);
         image.startAnimation(anim);
 
 
 
-
+        myWebView.loadUrl("https://asianbigbazaar.com/");
 
 
 
     }
+
+
+    public class myJavaScriptInterface {
+        @JavascriptInterface
+        public void setVisible(){
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    myWebView.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+
+    }
+
+
+
 
     private class MyWebViewClient extends WebViewClient {
         @Override
@@ -157,7 +181,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-            myWebView.loadUrl(url);
+            if (Objects.equals(url, "https://play.google.com/store/apps/details?id=com.asianbigbazaar"))
+            {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.asianbigbazaar"));
+                startActivity(intent);
+            }
+            else
+            {
+                myWebView.loadUrl(url);
+            }
+
             return true;
         }
 
@@ -170,6 +204,9 @@ public class MainActivity extends AppCompatActivity {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             progress.setVisibility(View.GONE);
+            myWebView.loadUrl("javascript:(function(){"+"document.getElementById('show').style.display ='none';"+"})()");
+            //Call to a function defined on my myJavaScriptInterface
+            myWebView.loadUrl("javascript: window.CallToAnAndroidFunction.setVisible()");
         }
     }
 
