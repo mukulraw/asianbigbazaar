@@ -1,4 +1,4 @@
-package com.asianbigbazaar.asianbaazar;
+package com.drivetime.app;
 
 import org.junit.Test;
 

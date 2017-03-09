@@ -3,24 +3,29 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config {
-            keyAlias 'asianbaazar'
+            keyAlias 'gobble'
             keyPassword 'Zedistark1@'
+            storeFile file('C:/Users/mukul/Desktop/KeyStore.jks')
+            storePassword 'Zedistark1@'
         }
     }
     compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    buildToolsVersion '25.0.0'
     defaultConfig {
-        applicationId "com.asianbigbazaar.asianbaazar"
-        minSdkVersion 19
+        applicationId "com.drivetime.app"
+        minSdkVersion 14
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "2.1"
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 

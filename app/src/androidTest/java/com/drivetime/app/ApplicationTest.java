@@ -1,4 +1,4 @@
-package com.asianbigbazaar.asianbaazar;
+package com.drivetime.app;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
